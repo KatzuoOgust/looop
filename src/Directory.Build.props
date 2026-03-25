@@ -17,6 +17,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/KatzuoOgust/looop</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
 
     <!-- Bump before tagging a release. The publish workflow overrides this with
          the git tag version: dotnet pack -p:Version=x.y.z -->
@@ -24,7 +25,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Bundle the repo README into every package so NuGet.org renders it. -->
+    <!-- Bundle the repo README and icon into every package so NuGet.org renders them. -->
     <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)../icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
