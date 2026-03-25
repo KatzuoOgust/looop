@@ -9,7 +9,7 @@ public static class Trigger
 	public static ITrigger Once() => new OnceTrigger();
 
 	/// <summary>Wait <paramref name="delay"/>, fire once, then stop.</summary>
-	public static ITrigger After(TimeSpan delay) => new AfterTrigger(delay);
+	public static ITrigger After(TimeSpan delay) => new ShiftTrigger(new OnceTrigger(), delay);
 
 	/// <summary>Fire repeatedly every <paramref name="interval"/>.</summary>
 	public static ITrigger Every(TimeSpan interval) => new EveryTrigger(interval);
@@ -18,7 +18,13 @@ public static class Trigger
 	/// Fire <paramref name="leadTime"/> before each tick of <paramref name="inner"/>.
 	/// </summary>
 	public static ITrigger Before(ITrigger inner, TimeSpan leadTime) =>
-		new BeforeTrigger(inner, leadTime);
+		new ShiftTrigger(inner, -leadTime);
+
+	/// <summary>
+	/// Fire <paramref name="delay"/> after each tick of <paramref name="inner"/>.
+	/// </summary>
+	public static ITrigger After(ITrigger inner, TimeSpan delay) =>
+		new ShiftTrigger(inner, delay);
 
 	/// <summary>
 	/// Fire on a cron schedule. Supports full 5-field expressions (<c>* * * * *</c>)

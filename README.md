@@ -44,10 +44,13 @@ Every trigger implements `ITrigger`. Call `NextAsync()` to ask when the action s
 | `Trigger.After(delay)` | Wait `delay`, fire once, then stop |
 | `Trigger.Every(interval)` | Fire on a fixed interval |
 | `Trigger.Before(inner, lead)` | Fire `lead` time before each tick of `inner` |
+| `Trigger.After(inner, delay)` | Fire `delay` time after each tick of `inner` |
 | `Trigger.Cron(expr)` | Full cron expression (`* * * * *`) or named macro |
 | `Trigger.WhenAny(t1, t2, …)` | Fire at the earliest of several triggers |
 | `Trigger.WhenAll(t1, t2, …)` | Fire when all triggers would have fired |
 | `Trigger.Custom(next)` | Delegate-backed trigger |
+
+`Before` and `After` are both built on a `ShiftTrigger` that applies a positive or negative `TimeSpan` offset to each inner tick. `Trigger.After(delay)` is shorthand for `Trigger.After(Trigger.Once(), delay)`.
 
 ### Cron macros
 

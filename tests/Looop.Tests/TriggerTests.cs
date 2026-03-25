@@ -109,6 +109,37 @@ public class TriggerTests
 	}
 
 
+	[Fact]
+	public async Task After_InnerOverload_FiresAfterInner()
+	{
+		var interval = TimeSpan.FromMinutes(10);
+		var delay = TimeSpan.FromMinutes(1);
+		var inner = Trigger.Every(interval);
+		var t = Trigger.After(inner, delay);
+
+		var innerNext = await Trigger.Every(interval).NextAsync();
+		var afterNext = await t.NextAsync();
+
+		// afterNext should be approximately (innerNext + delay)
+		Assert.NotNull(afterNext);
+		var diff = afterNext!.Value - innerNext!.Value;
+		Assert.True(diff >= delay - TimeSpan.FromMilliseconds(200));
+		Assert.True(diff <= delay + TimeSpan.FromMilliseconds(200));
+	}
+
+	[Fact]
+	public async Task After_InnerOverload_ReturnsNullWhenInnerExhausted()
+	{
+		var inner = Trigger.Once();
+		var t = Trigger.After(inner, TimeSpan.FromSeconds(5));
+
+		var first = await t.NextAsync();
+		var second = await t.NextAsync();
+
+		Assert.NotNull(first);
+		Assert.Null(second);
+	}
+
 	[Theory]
 	[InlineData("@hourly", "0 * * * *")]
 	[InlineData("@daily", "0 0 * * *")]
