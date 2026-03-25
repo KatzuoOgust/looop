@@ -1,0 +1,22 @@
+<Project>
+  <!--
+    Imported AFTER the SDK targets, so $(Version) is already fully resolved
+    (either from VersionPrefix/VersionSuffix or from -p:Version=x.y.z at the CLI).
+
+    Versioning contract for every tagged release (e.g. tag v1.2.3):
+
+      NuGet package version  = 1.2.3          (from -p:Version)
+      AssemblyVersion        = 1.0.0.0        (major only — binding-redirect safety)
+      FileVersion            = 1.2.3.0        (full numeric — shown in file properties)
+      InformationalVersion   = 1.2.3+<sha>    (full + source commit hash, set by SDK)
+
+    AssemblyVersion is locked to major.0.0.0 so consumers compiled against v1.0
+    do not need to recompile for v1.1 or v1.2 (standard practice for public libs).
+    FileVersion strips any pre-release label (e.g. 1.0.0-beta.1 → 1.0.0.0) because
+    Windows file-version fields only accept numeric components.
+  -->
+  <PropertyGroup>
+    <AssemblyVersion>$([System.Text.RegularExpressions.Regex]::Match($(Version), '^\d+').Value).0.0.0</AssemblyVersion>
+    <FileVersion>$([System.Text.RegularExpressions.Regex]::Match($(Version), '^\d+\.\d+\.\d+').Value).0</FileVersion>
+  </PropertyGroup>
+</Project>
