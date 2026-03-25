@@ -1,5 +1,4 @@
 using KatzuoOgust.Looop.AspNetCore.Middlewares;
-using KatzuoOgust.Looop.Pipeline.Middlewares;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace KatzuoOgust.Looop;

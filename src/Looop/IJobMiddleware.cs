@@ -1,4 +1,4 @@
-namespace KatzuoOgust.Looop.Pipeline.Middlewares;
+namespace KatzuoOgust.Looop;
 
 /// <summary>
 /// Represents a step in the job execution pipeline.

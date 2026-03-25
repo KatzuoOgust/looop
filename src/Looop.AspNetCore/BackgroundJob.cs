@@ -1,4 +1,4 @@
-using KatzuoOgust.Looop.Pipeline.Middlewares;
+using KatzuoOgust.Looop;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

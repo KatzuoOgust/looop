@@ -1,4 +1,4 @@
-namespace KatzuoOgust.Looop.Pipeline.Middlewares;
+namespace KatzuoOgust.Looop;
 
 /// <summary>
 /// An <see cref="IJob"/> decorator that runs <see cref="IJob.HandleAsync"/> through

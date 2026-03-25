@@ -1,4 +1,4 @@
-using KatzuoOgust.Looop.Pipeline.Middlewares;
+using KatzuoOgust.Looop;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
