@@ -9,9 +9,9 @@ internal sealed class WhenAllTrigger(ITrigger[] triggers) : ITrigger
 	private readonly ITrigger[] _triggers = triggers;
 
 	/// <inheritdoc/>
-	public async ValueTask<DateTimeOffset?> NextAsync(CancellationToken cancellationToken = default)
+	public async ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, CancellationToken cancellationToken = default)
 	{
-		var tasks = _triggers.Select(t => t.NextAsync(cancellationToken).AsTask()).ToList();
+		var tasks = _triggers.Select(t => t.NextAsync(lastRunAt, cancellationToken).AsTask()).ToList();
 		var results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
 		DateTimeOffset? latest = DateTimeOffset.MinValue;

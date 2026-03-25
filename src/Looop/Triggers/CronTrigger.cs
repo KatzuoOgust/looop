@@ -33,9 +33,10 @@ internal sealed class CronTrigger : ITrigger
 	}
 
 	/// <inheritdoc/>
-	public ValueTask<DateTimeOffset?> NextAsync(CancellationToken cancellationToken = default)
+	public ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, CancellationToken cancellationToken = default)
 	{
-		var next = _expr.GetNextOccurrence(DateTimeOffset.UtcNow, TimeZoneInfo.Utc);
+		var after = lastRunAt ?? DateTimeOffset.UtcNow;
+		var next = _expr.GetNextOccurrence(after, TimeZoneInfo.Utc);
 		return new ValueTask<DateTimeOffset?>(next);
 	}
 }

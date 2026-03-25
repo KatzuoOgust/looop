@@ -34,8 +34,8 @@ sealed class HealthCheckJob(IHttpClientFactory http, ILogger<HealthCheckJob> log
 {
 	private readonly ITrigger _trigger = Trigger.Every(TimeSpan.FromSeconds(30));
 
-	public ValueTask<DateTimeOffset?> NextAsync(CancellationToken ct = default) =>
-		_trigger.NextAsync(ct);
+	public ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, CancellationToken ct = default) =>
+		_trigger.NextAsync(lastRunAt, ct);
 
 	public async Task HandleAsync(CancellationToken ct)
 	{

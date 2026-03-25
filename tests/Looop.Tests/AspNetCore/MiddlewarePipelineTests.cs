@@ -7,7 +7,7 @@ public class MiddlewarePipelineTests
 	private sealed class StubJob : IJob
 	{
 		private readonly ITrigger _trigger = Trigger.Once();
-		public ValueTask<DateTimeOffset?> NextAsync(CancellationToken ct = default) => _trigger.NextAsync(ct);
+		public ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, CancellationToken ct = default) => _trigger.NextAsync(lastRunAt, ct);
 		public ValueTask HandleErrorAsync(Exception ex, CancellationToken ct) => ValueTask.CompletedTask;
 		public Task HandleAsync(CancellationToken ct) => Task.CompletedTask;
 	}

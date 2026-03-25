@@ -27,13 +27,14 @@ public static class Loop
 		CancellationToken cancellationToken = default)
 	{
 		errorPolicy ??= ErrorPolicy.Stop;
+		DateTimeOffset? lastRunAt = null;
 
 		while (!cancellationToken.IsCancellationRequested)
 		{
 			DateTimeOffset? fireAt;
 			try
 			{
-				fireAt = await trigger.NextAsync(cancellationToken).ConfigureAwait(false);
+				fireAt = await trigger.NextAsync(lastRunAt, cancellationToken).ConfigureAwait(false);
 			}
 			catch (OperationCanceledException ex) when (ex.CancellationToken == cancellationToken)
 			{
@@ -42,6 +43,8 @@ public static class Loop
 
 			if (fireAt is null)
 				return;
+
+			lastRunAt = fireAt.Value;
 
 			var delay = fireAt.Value - DateTimeOffset.UtcNow;
 			if (delay > TimeSpan.Zero)

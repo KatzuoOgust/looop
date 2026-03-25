@@ -6,5 +6,5 @@ namespace KatzuoOgust.Looop;
 /// </summary>
 public interface ITrigger
 {
-	ValueTask<DateTimeOffset?> NextAsync(CancellationToken cancellationToken = default);
+	ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, CancellationToken cancellationToken = default);
 }

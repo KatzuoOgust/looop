@@ -51,8 +51,8 @@ public class TriggerTests
 		var t = Trigger.Every(interval);
 
 		var first = await t.NextAsync();
-		var second = await t.NextAsync();
-		var third = await t.NextAsync();
+		var second = await t.NextAsync(first);
+		var third = await t.NextAsync(second);
 
 		Assert.NotNull(first);
 		Assert.NotNull(second);

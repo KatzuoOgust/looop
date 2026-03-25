@@ -64,8 +64,8 @@ sealed class CountdownJob(int limit) : IJob
 	private readonly ITrigger _trigger = Trigger.Every(TimeSpan.FromMilliseconds(50));
 	private int _count;
 
-	public ValueTask<DateTimeOffset?> NextAsync(CancellationToken ct = default) =>
-		_count >= limit ? new(default(DateTimeOffset?)) : _trigger.NextAsync(ct);
+	public ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, CancellationToken ct = default) =>
+		_count >= limit ? new(default(DateTimeOffset?)) : _trigger.NextAsync(lastRunAt, ct);
 
 	public Task HandleAsync(CancellationToken ct)
 	{

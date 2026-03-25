@@ -49,6 +49,6 @@ public static class Trigger
 	/// Build a trigger from a delegate that returns the next fire time on each call.
 	/// Return <c>null</c> from the delegate to stop the loop.
 	/// </summary>
-	public static ITrigger Custom(Func<CancellationToken, ValueTask<DateTimeOffset?>> next) =>
+	public static ITrigger Custom(Func<DateTimeOffset?, CancellationToken, ValueTask<DateTimeOffset?>> next) =>
 		new CustomTrigger(next);
 }

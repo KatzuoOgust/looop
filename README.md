@@ -36,7 +36,7 @@ See [`examples/SimpleCli`](examples/SimpleCli/Program.cs) and [`examples/AspNetC
 
 ## Triggers
 
-Every trigger implements `ITrigger`. Call `NextAsync()` to ask when the action should next fire; return `null` to stop the loop.
+Every trigger implements `ITrigger`. Call `NextAsync(lastRunAt?)` to ask when the action should next fire; return `null` to stop the loop. The optional `lastRunAt` argument is the previously scheduled fire time — stateless triggers (e.g. `Every`, `Cron`) use it as the reference point to compute the next occurrence.
 
 | Factory | Behaviour |
 |---|---|
@@ -48,7 +48,7 @@ Every trigger implements `ITrigger`. Call `NextAsync()` to ask when the action s
 | `Trigger.Cron(expr)` | Full cron expression (`* * * * *`) or named macro |
 | `Trigger.WhenAny(t1, t2, …)` | Fire at the earliest of several triggers |
 | `Trigger.WhenAll(t1, t2, …)` | Fire when all triggers would have fired |
-| `Trigger.Custom(next)` | Delegate-backed trigger |
+| `Trigger.Custom(next)` | Delegate-backed trigger — `Func<DateTimeOffset?, CancellationToken, ValueTask<DateTimeOffset?>>` |
 
 `Before` and `After` are both built on a `ShiftTrigger` that applies a positive or negative `TimeSpan` offset to each inner tick. `Trigger.After(delay)` is shorthand for `Trigger.After(Trigger.Once(), delay)`.
 
@@ -92,12 +92,10 @@ await Loop.RunAsync(
 ```csharp
 public class HeartbeatJob : IJob
 {
-    // Trigger is a field — stateful triggers (e.g. Every, Cron) must be created
-    // once and reused so they can track their internal state across calls.
     private readonly ITrigger _trigger = Trigger.Every(TimeSpan.FromSeconds(30));
 
-    public ValueTask<DateTimeOffset?> NextAsync(CancellationToken ct = default) =>
-        _trigger.NextAsync(ct);
+    public ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, CancellationToken ct = default) =>
+        _trigger.NextAsync(lastRunAt, ct);
 
     public async Task HandleAsync(CancellationToken ct) =>
         await httpClient.GetAsync("/health", ct);

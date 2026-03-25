@@ -10,11 +10,11 @@ internal sealed class WhenAnyTrigger(ITrigger[] triggers) : ITrigger
 	private readonly List<ITrigger> _active = [.. triggers];
 
 	/// <inheritdoc/>
-	public async ValueTask<DateTimeOffset?> NextAsync(CancellationToken cancellationToken = default)
+	public async ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, CancellationToken cancellationToken = default)
 	{
 		if (_active.Count == 0) return null;
 
-		var tasks = _active.Select(t => t.NextAsync(cancellationToken).AsTask()).ToList();
+		var tasks = _active.Select(t => t.NextAsync(lastRunAt, cancellationToken).AsTask()).ToList();
 		var results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
 		DateTimeOffset? earliest = null;

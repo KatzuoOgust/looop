@@ -9,13 +9,14 @@ namespace KatzuoOgust.Looop.Triggers;
 internal sealed class ShiftTrigger(ITrigger inner, TimeSpan offset) : ITrigger
 {
 	/// <inheritdoc/>
-	public async ValueTask<DateTimeOffset?> NextAsync(CancellationToken cancellationToken = default)
+	public async ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, CancellationToken cancellationToken = default)
 	{
-		var next = await inner.NextAsync(cancellationToken).ConfigureAwait(false);
+		var next = await inner.NextAsync(lastRunAt, cancellationToken).ConfigureAwait(false);
 		if (next is null) return null;
 
 		var fireAt = next.Value + offset;
+		var now = lastRunAt ?? DateTimeOffset.UtcNow;
 		// Don't return a time earlier than now — clamp to now.
-		return fireAt < DateTimeOffset.UtcNow ? DateTimeOffset.UtcNow : fireAt;
+		return fireAt < now ? now : fireAt;
 	}
 }

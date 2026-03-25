@@ -17,8 +17,8 @@ public sealed class MiddlewareAwareJob : IJob
 	}
 
 	/// <inheritdoc/>
-	public ValueTask<DateTimeOffset?> NextAsync(CancellationToken cancellationToken = default) =>
-		_inner.NextAsync(cancellationToken);
+	public ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, CancellationToken cancellationToken = default) =>
+		_inner.NextAsync(lastRunAt, cancellationToken);
 
 	/// <inheritdoc/>
 	public ValueTask HandleErrorAsync(Exception exception, CancellationToken cancellationToken) =>
