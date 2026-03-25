@@ -1,5 +1,9 @@
 # Looop
 
+<p align="center">
+  <img src="icon.png" alt="Looop" width="96" />
+</p>
+
 A tiny .NET library for running async actions in a loop with pluggable, composable triggers.
 
 [![CI](https://github.com/KatzuoOgust/looop/actions/workflows/ci.yml/badge.svg)](https://github.com/KatzuoOgust/looop/actions/workflows/ci.yml)
