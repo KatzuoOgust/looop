@@ -29,6 +29,32 @@ If you're unsure whether a change is welcome, open an issue first.
 
 All style rules are enforced by `.editorconfig` — run `dotnet format` before submitting a PR and it will fix everything automatically.
 
+## Test naming
+
+Test methods follow **`Subject_Result_WhenCondition`**. The `WhenCondition` segment can be omitted when the condition is self-evident from `Subject` or `Result` alone.
+
+| Segment | What it describes |
+|---|---|
+| `Subject` | The class or method under test (e.g. `RunAsync`, `OnceTrigger`, `Invoke`) |
+| `Result` | The expected outcome (e.g. `ReturnsNull`, `ThrowsAndStops`, `KeepsLooping`) |
+| `WhenCondition` | The scenario that makes this test distinct — omit when obvious |
+
+```csharp
+// ✅ condition needed — disambiguates from other cancellation tests
+public async Task RunAsync_StopsCleanly_WhenCancelledDuringDelay()
+public async Task RunAsync_DoesNotExecute_WhenCancelledBeforeStart()
+
+// ✅ condition omitted — result is self-evident
+public async Task Once_ReturnsNullOnSecondCall()
+public async Task Every_SchedulesOnFixedInterval()
+
+// ❌ missing Subject
+public async Task CancellationDuringDelay_StopsCleanly()
+
+// ❌ condition redundant — "WhenCalledTwice" adds nothing to "SecondCall"
+public async Task Once_ReturnsNullOnSecondCall_WhenCalledTwice()
+```
+
 ## Logging — the `Log` class pattern
 
 All logging in this codebase is done through a **nested `private static partial class Log`** inside the class that owns the log events. Methods are declared with `[LoggerMessage]` for compile-time source generation, which avoids allocations on hot paths and keeps log message strings co-located with the code that emits them.

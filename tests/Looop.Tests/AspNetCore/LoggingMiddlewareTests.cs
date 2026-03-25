@@ -7,7 +7,7 @@ namespace KatzuoOgust.Looop;
 public class LoggingMiddlewareTests
 {
 	[Fact]
-	public async Task Invoke_CallsNext()
+	public async Task Invoke_CallsNextDelegate()
 	{
 		bool called = false;
 		var middleware = new LoggingMiddleware(NullLogger<LoggingMiddleware>.Instance);
@@ -22,7 +22,7 @@ public class LoggingMiddlewareTests
 	}
 
 	[Fact]
-	public async Task Invoke_RethrowsException()
+	public async Task Invoke_RethrowsException_WhenNextThrows()
 	{
 		var middleware = new LoggingMiddleware(NullLogger<LoggingMiddleware>.Instance);
 
@@ -32,7 +32,7 @@ public class LoggingMiddlewareTests
 	}
 
 	[Fact]
-	public async Task Invoke_RethrowsCancellation()
+	public async Task Invoke_RethrowsCancellation_WhenTokenIsCancelled()
 	{
 		using var cts = new CancellationTokenSource();
 		await cts.CancelAsync();

@@ -73,7 +73,7 @@ make         # list all targets
 
 - All trigger types are `internal sealed`; public API surfaces via static factory classes (`Trigger`, `ErrorPolicy`).
 - Nullable reference types and implicit usings are enabled everywhere.
-- Tests use **xunit** (no FluentAssertions) and share the `KatzuoOgust.Looop` namespace with src to access internals (e.g., `using KatzuoOgust.Looop.Triggers;` for internal trigger types).
+- Tests use **xunit** (no FluentAssertions) and share the `KatzuoOgust.Looop` namespace with src to access internals (e.g., `using KatzuoOgust.Looop.Triggers;` for internal trigger types). Test methods follow `Subject_Result_WhenCondition` (see CONTRIBUTING.md).
 - Log events use `partial` classes with `[LoggerMessage]` — follow the same pattern when adding log calls. See CONTRIBUTING.md for the exact pattern.
 - `OperationCanceledException` caused by the loop's own `CancellationToken` is always caught and treated as a graceful stop (never rethrown to the error policy). This is handled in `src/Looop/Loop.cs`.
 - Branch naming: `feature/<short-description>` for features, `fix/<short-description>` for bug fixes.

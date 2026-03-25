@@ -7,7 +7,7 @@ public class TriggerTests
 {
 
 	[Fact]
-	public async Task Once_FiresOnce()
+	public async Task Once_ReturnsNullOnSecondCall()
 	{
 		var t = Trigger.Once();
 		var first = await t.NextAsync();
@@ -18,7 +18,7 @@ public class TriggerTests
 	}
 
 	[Fact]
-	public async Task Once_FiresImmediately()
+	public async Task Once_ReturnsTimeCloseToNow()
 	{
 		var t = Trigger.Once();
 		var before = DateTimeOffset.UtcNow;
@@ -29,7 +29,7 @@ public class TriggerTests
 
 
 	[Fact]
-	public async Task After_FiresOnceAfterDelay()
+	public async Task After_SchedulesAfterDelayAndExhausts()
 	{
 		var delay = TimeSpan.FromSeconds(5);
 		var t = Trigger.After(delay);
@@ -45,7 +45,7 @@ public class TriggerTests
 
 
 	[Fact]
-	public async Task Every_FiresRepeatedly()
+	public async Task Every_SchedulesOnFixedInterval()
 	{
 		var interval = TimeSpan.FromSeconds(10);
 		var t = Trigger.Every(interval);
@@ -63,7 +63,7 @@ public class TriggerTests
 
 
 	[Fact]
-	public async Task Before_FiresBeforeInner()
+	public async Task Before_SchedulesBeforeInnerTick_WhenInnerHasFutureFire()
 	{
 		var interval = TimeSpan.FromMinutes(10);
 		var lead = TimeSpan.FromMinutes(1);
@@ -81,7 +81,7 @@ public class TriggerTests
 	}
 
 	[Fact]
-	public async Task Before_ReturnsNullWhenInnerExhausted()
+	public async Task Before_ReturnsNull_WhenInnerIsExhausted()
 	{
 		var inner = Trigger.Once();
 		var t = Trigger.Before(inner, TimeSpan.FromSeconds(5));
@@ -94,7 +94,7 @@ public class TriggerTests
 	}
 
 	[Fact]
-	public async Task Before_ClampsToNowWhenLeadExceedsFireTime()
+	public async Task Before_ClampsToCurrentTime_WhenLeadExceedsInnerFireTime()
 	{
 		// Inner fires in 1s but lead is 10s — should clamp to now
 		var inner = Trigger.After(TimeSpan.FromSeconds(1));
@@ -110,7 +110,7 @@ public class TriggerTests
 
 
 	[Fact]
-	public async Task After_InnerOverload_FiresAfterInner()
+	public async Task After_SchedulesAfterInnerTick_WhenInnerHasFutureFire()
 	{
 		var interval = TimeSpan.FromMinutes(10);
 		var delay = TimeSpan.FromMinutes(1);
@@ -128,7 +128,7 @@ public class TriggerTests
 	}
 
 	[Fact]
-	public async Task After_InnerOverload_ReturnsNullWhenInnerExhausted()
+	public async Task After_ReturnsNull_WhenInnerIsExhausted()
 	{
 		var inner = Trigger.Once();
 		var t = Trigger.After(inner, TimeSpan.FromSeconds(5));
@@ -149,7 +149,7 @@ public class TriggerTests
 	[InlineData("@yearly", "0 0 1 1 *")]
 	[InlineData("@annually", "0 0 1 1 *")]
 	[InlineData("@minutely", "* * * * *")]
-	public async Task Cron_NamedMacrosResolveCorrectly(string named, string equivalent)
+	public async Task Cron_ProducesEquivalentSchedule_WhenUsingNamedMacro(string named, string equivalent)
 	{
 		var tNamed = Trigger.Cron(named);
 		var tExpr = Trigger.Cron(equivalent);
@@ -164,7 +164,7 @@ public class TriggerTests
 	}
 
 	[Fact]
-	public async Task Cron_FullExpressionReturnsNextOccurrence()
+	public async Task Cron_ReturnsNextOccurrence_WhenUsingFullExpression()
 	{
 		var t = Trigger.Cron("*/5 * * * *"); // every 5 minutes
 		var now = DateTimeOffset.UtcNow;
@@ -177,7 +177,7 @@ public class TriggerTests
 
 
 	[Fact]
-	public async Task WhenAny_PicksEarliest()
+	public async Task WhenAny_ReturnsEarliestTime()
 	{
 		var early = Trigger.After(TimeSpan.FromSeconds(1));
 		var late = Trigger.After(TimeSpan.FromSeconds(10));
@@ -191,7 +191,7 @@ public class TriggerTests
 	}
 
 	[Fact]
-	public async Task WhenAny_ContinuesAfterOneChildExhausted()
+	public async Task WhenAny_ContinuesToFire_WhenOneChildExhausted()
 	{
 		var once = Trigger.Once();
 		var repeating = Trigger.Every(TimeSpan.FromSeconds(5));
@@ -207,7 +207,7 @@ public class TriggerTests
 	}
 
 	[Fact]
-	public async Task WhenAny_StopsWhenAllChildrenExhausted()
+	public async Task WhenAny_ReturnsNull_WhenAllChildrenExhausted()
 	{
 		// WhenAny polls all active triggers simultaneously to pick the earliest.
 		// Two Once() triggers are both consumed on the first call, so the second
@@ -223,7 +223,7 @@ public class TriggerTests
 
 
 	[Fact]
-	public async Task WhenAll_PicksLatest()
+	public async Task WhenAll_ReturnsLatestTime()
 	{
 		var early = Trigger.After(TimeSpan.FromSeconds(1));
 		var late = Trigger.After(TimeSpan.FromSeconds(10));
@@ -236,7 +236,7 @@ public class TriggerTests
 	}
 
 	[Fact]
-	public async Task WhenAll_StopsWhenAnyChildExhausted()
+	public async Task WhenAll_ReturnsNull_WhenAnyChildExhausted()
 	{
 		var once = Trigger.Once();
 		var repeating = Trigger.Every(TimeSpan.FromSeconds(5));

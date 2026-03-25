@@ -7,7 +7,7 @@ namespace KatzuoOgust.Looop;
 public class ConcurrencyTests
 {
 	[Fact]
-	public async Task EveryTrigger_ConcurrentCalls_MayProduceDuplicates()
+	public async Task EveryTrigger_MayProduceDuplicates_WhenCalledConcurrently()
 	{
 		// This test demonstrates that EveryTrigger is not thread-safe
 		var trigger = Trigger.Every(TimeSpan.FromSeconds(1));
@@ -31,7 +31,7 @@ public class ConcurrencyTests
 	}
 
 	[Fact]
-	public async Task OnceTrigger_ConcurrentCalls_MayFireMultipleTimes()
+	public async Task OnceTrigger_MayFireMultipleTimes_WhenCalledConcurrently()
 	{
 		// This test demonstrates that OnceTrigger is not thread-safe
 		var trigger = Trigger.Once();

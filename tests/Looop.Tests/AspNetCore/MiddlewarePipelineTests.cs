@@ -22,7 +22,7 @@ public class MiddlewarePipelineTests
 	}
 
 	[Fact]
-	public async Task Pipeline_MiddlewaresExecuteInRegistrationOrder()
+	public async Task Pipeline_ExecutesMiddlewaresInRegistrationOrder()
 	{
 		var order = new List<string>();
 		var middlewares = new IJobMiddleware[]
@@ -46,7 +46,7 @@ public class MiddlewarePipelineTests
 	}
 
 	[Fact]
-	public async Task MiddlewareAwareJob_ExecutesPipelineThenJob()
+	public async Task MiddlewareAwareJob_ExecutesAllMiddlewares()
 	{
 		var order = new List<string>();
 		var inner = new StubJob();
@@ -64,7 +64,7 @@ public class MiddlewarePipelineTests
 	}
 
 	[Fact]
-	public async Task MiddlewareAwareJob_DelegatesNextAsyncToInner()
+	public async Task MiddlewareAwareJob_ForwardsNextAsyncToInner()
 	{
 		var inner = new StubJob();
 		var wrapped = new MiddlewareAwareJob(inner, []);

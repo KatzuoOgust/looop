@@ -7,7 +7,7 @@ namespace KatzuoOgust.Looop;
 public class RetryMiddlewareTests
 {
 	[Fact]
-	public async Task Invoke_SuccessOnFirstAttempt_CallsNextOnce()
+	public async Task Invoke_CallsNextOnce_WhenSucceedsOnFirstAttempt()
 	{
 		int calls = 0;
 		var middleware = new RetryMiddleware(NullLogger<RetryMiddleware>.Instance);
@@ -22,7 +22,7 @@ public class RetryMiddlewareTests
 	}
 
 	[Fact]
-	public async Task Invoke_FailsThenSucceeds_RetriesCorrectly()
+	public async Task Invoke_RetriesUntilSuccess_WhenActionFailsTransiently()
 	{
 		int calls = 0;
 		var middleware = new RetryMiddleware(NullLogger<RetryMiddleware>.Instance,
@@ -39,7 +39,7 @@ public class RetryMiddlewareTests
 	}
 
 	[Fact]
-	public async Task Invoke_ExceedsMaxRetries_ThrowsAfterExhaustion()
+	public async Task Invoke_ThrowsAfterMaxRetries_WhenActionAlwaysFails()
 	{
 		int calls = 0;
 		var middleware = new RetryMiddleware(NullLogger<RetryMiddleware>.Instance,
@@ -56,7 +56,7 @@ public class RetryMiddlewareTests
 	}
 
 	[Fact]
-	public async Task Invoke_BackoffDelayGrowsExponentially()
+	public async Task Invoke_UsesExponentialBackoff()
 	{
 		var middleware = new RetryMiddleware(NullLogger<RetryMiddleware>.Instance,
 			new RetryOptions
@@ -87,7 +87,7 @@ public class RetryMiddlewareTests
 	}
 
 	[Fact]
-	public async Task Invoke_CancellationDuringRetryDelay_StopsImmediately()
+	public async Task Invoke_StopsImmediately_WhenCancelledDuringRetryDelay()
 	{
 		using var cts = new CancellationTokenSource();
 		var middleware = new RetryMiddleware(NullLogger<RetryMiddleware>.Instance,
@@ -108,7 +108,7 @@ public class RetryMiddlewareTests
 	}
 
 	[Fact]
-	public async Task Invoke_MaxDelayCapIsRespected()
+	public async Task Invoke_CapsRetryDelay_WhenMaxDelayIsConfigured()
 	{
 		var middleware = new RetryMiddleware(NullLogger<RetryMiddleware>.Instance,
 			new RetryOptions

@@ -7,7 +7,7 @@ public class LoopTests
 {
 
 	[Fact]
-	public async Task RunAsync_Once_ExecutesExactlyOnce()
+	public async Task RunAsync_ExecutesExactlyOnce_WhenUsingOnceTrigger()
 	{
 		int count = 0;
 		await Loop.RunAsync(_ => { count++; return Task.CompletedTask; }, Trigger.Once());
@@ -15,7 +15,7 @@ public class LoopTests
 	}
 
 	[Fact]
-	public async Task RunAsync_After_ExecutesOnceAfterDelay()
+	public async Task RunAsync_ExecutesOnceAfterDelay_WhenUsingAfterTrigger()
 	{
 		int count = 0;
 		var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -28,7 +28,7 @@ public class LoopTests
 	}
 
 	[Fact]
-	public async Task RunAsync_Every_StopsOnCancellation()
+	public async Task RunAsync_StopsOnCancellation_WhenUsingEveryTrigger()
 	{
 		int count = 0;
 		using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(250));
@@ -43,7 +43,7 @@ public class LoopTests
 
 
 	[Fact]
-	public async Task RunAsync_CancellationBeforeStart_DoesNotExecute()
+	public async Task RunAsync_DoesNotExecute_WhenCancelledBeforeStart()
 	{
 		int count = 0;
 		using var cts = new CancellationTokenSource();
@@ -57,7 +57,7 @@ public class LoopTests
 	}
 
 	[Fact]
-	public async Task RunAsync_CancellationDuringDelay_StopsCleanly()
+	public async Task RunAsync_StopsCleanly_WhenCancelledDuringDelay()
 	{
 		int count = 0;
 		using var cts = new CancellationTokenSource();
@@ -76,7 +76,7 @@ public class LoopTests
 
 
 	[Fact]
-	public async Task RunAsync_ErrorPolicyStop_ThrowsAndStops()
+	public async Task RunAsync_ThrowsAndStops_WhenErrorPolicyIsStop()
 	{
 		int count = 0;
 
@@ -92,7 +92,7 @@ public class LoopTests
 
 
 	[Fact]
-	public async Task RunAsync_ErrorPolicyContinue_KeepsLooping()
+	public async Task RunAsync_KeepsLooping_WhenErrorPolicyIsContinue()
 	{
 		int count = 0;
 		using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
@@ -108,7 +108,7 @@ public class LoopTests
 
 
 	[Fact]
-	public async Task RunAsync_CustomOnError_CalledWithException()
+	public async Task RunAsync_InvokesCustomErrorHandler_WhenActionThrows()
 	{
 		var errors = new List<Exception>();
 		using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(150));
@@ -125,7 +125,7 @@ public class LoopTests
 	}
 
 	[Fact]
-	public async Task RunAsync_CustomOnError_CanStopByThrowing()
+	public async Task RunAsync_Stops_WhenCustomErrorHandlerRethrows()
 	{
 		int count = 0;
 
@@ -146,7 +146,7 @@ public class LoopTests
 
 
 	[Fact]
-	public async Task RunAsync_WhenAny_ExecutesForEachEarliestTick()
+	public async Task RunAsync_ExecutesForEachEarliestTick_WhenUsingWhenAnyTrigger()
 	{
 		int count = 0;
 		using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(300));
