@@ -2,14 +2,8 @@
 
 A tiny .NET library for running async actions in a loop with pluggable, composable triggers.
 
-## Development
-
-```
-make          # show available targets
-make build    # dotnet build
-make test     # dotnet test
-make format   # dotnet format
-```
+[![NuGet](https://img.shields.io/nuget/v/KatzuoOgust.Looop.svg)](https://www.nuget.org/packages/KatzuoOgust.Looop)
+[![NuGet](https://img.shields.io/nuget/v/KatzuoOgust.Looop.AspNetCore.svg?label=KatzuoOgust.Looop.AspNetCore)](https://www.nuget.org/packages/KatzuoOgust.Looop.AspNetCore)
 
 ## Installation
 
@@ -175,4 +169,7 @@ builder.Services.AddJobMiddleware<RetryMiddleware>(_ =>
     new RetryMiddleware(retryLogger, new RetryOptions { MaxRetries = 5 }));
 ```
 
-`BackgroundJob<T>` is a `BackgroundService` that resolves all `IJobMiddleware` registrations, builds the pipeline around `job.HandleAsync`, and logs start, stop, and fault events.
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, workflow, and code conventions.
+

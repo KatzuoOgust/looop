@@ -40,6 +40,7 @@ public ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt = null, Ca
 
 All classes under `src/Looop/Triggers/` are `internal sealed`. The `Trigger` static factory is the only public API for creating triggers.
 
+- `OnceTrigger` fires at `UtcNow` on the first call, then returns `null` to stop the loop. Backs `Trigger.Once()` and (via `ShiftTrigger`) `Trigger.After(delay)`.
 - `ShiftTrigger` is the shared primitive behind both `Trigger.Before(inner, lead)` (negative offset) and `Trigger.After(inner, delay)` (positive offset). It clamps the result to `lastRunAt ?? UtcNow` so it never returns a time in the past.
 - `CronTrigger` uses the **Cronos** NuGet package; cron macros (`@daily`, `@hourly`, etc.) are expanded to 5-field expressions in the constructor. It is **stateless** — each call computes from `lastRunAt ?? UtcNow`.
 - `EveryTrigger` is **stateless** — returns `(lastRunAt ?? UtcNow) + interval` with no internal fields.
@@ -73,8 +74,10 @@ make         # list all targets
 - All trigger types are `internal sealed`; public API surfaces via static factory classes (`Trigger`, `ErrorPolicy`).
 - Nullable reference types and implicit usings are enabled everywhere.
 - Tests use **xunit** (no FluentAssertions) and share the `KatzuoOgust.Looop` namespace with src to access internals (e.g., `using KatzuoOgust.Looop.Triggers;` for internal trigger types).
-- Log events use `partial` classes with `[LoggerMessage]` — follow the same pattern when adding log calls.
-- `OperationCanceledException` caused by the loop's own `CancellationToken` is always caught and treated as a graceful stop (never rethrown to the error policy).
+- Log events use `partial` classes with `[LoggerMessage]` — follow the same pattern when adding log calls. See CONTRIBUTING.md for the exact pattern.
+- `OperationCanceledException` caused by the loop's own `CancellationToken` is always caught and treated as a graceful stop (never rethrown to the error policy). This is handled in `src/Looop/Loop.cs`.
+- Branch naming: `feature/<short-description>` for features, `fix/<short-description>` for bug fixes.
+- Do not manually edit `Looop.slnx` unless adding or removing a project.
 
 ## Key Files
 

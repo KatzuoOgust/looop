@@ -2,12 +2,28 @@
 
 ## Getting started
 
-```
-git clone <repo>
+```sh
+git clone https://github.com/KatzuoOgust/looop.git
 cd looop
-dotnet build
-dotnet test
+make build
+make test
 ```
+
+## Workflow
+
+1. Fork the repository and create a branch from `main`.
+2. Branch naming: `feature/<short-description>` for new features, `fix/<short-description>` for bug fixes.
+3. Make your changes and ensure all tests pass (`make test`) and code is formatted (`make format`).
+4. Open a pull request against `main`. Include a short summary of what changed and why.
+
+All PRs must pass `make build` and `make test` before merge.
+
+## Scope
+
+In scope: bug fixes, new trigger types, new error policies, new middleware, documentation improvements.
+Out of scope: changes to `Looop.slnx` unless you're adding/removing a project, auto-generated `obj/` and `bin/` files.
+
+If you're unsure whether a change is welcome, open an issue first.
 
 ## Code style
 
