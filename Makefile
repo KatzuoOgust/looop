@@ -1,4 +1,4 @@
-.PHONY: help build test format pack push
+.PHONY: help build test format pack push clean
 
 help: ## Show available targets
 	@echo ""
@@ -30,3 +30,7 @@ push: ## Push artifacts/*.nupkg to NuGet.org (requires NUGET_API_KEY env var)
 		--api-key $(NUGET_API_KEY) \
 		--source https://api.nuget.org/v3/index.json \
 		--skip-duplicate
+
+clean: ## Remove build outputs (bin/, obj/) and packed artifacts/
+	dotnet clean -v q
+	rm -rf artifacts
