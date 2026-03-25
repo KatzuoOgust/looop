@@ -12,3 +12,6 @@ indent_size = 4
 tab_width = 4
 dotnet_sort_system_directives_first = true
 csharp_new_line_before_open_brace = all
+
+# When a binary expression or lambda wraps across lines, &&, ||, and => lead the continuation line
+dotnet_style_operator_placement_when_wrapping = beginning_of_line

@@ -27,8 +27,7 @@ If you're unsure whether a change is welcome, open an issue first.
 
 ## Code style
 
-- Tabs for indentation (enforced by `.editorconfig` and `dotnet format`)
-- Run `dotnet format` before submitting a PR
+All style rules are enforced by `.editorconfig` — run `dotnet format` before submitting a PR and it will fix everything automatically.
 
 ## Logging — the `Log` class pattern
 
