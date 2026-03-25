@@ -10,6 +10,9 @@ public sealed class MiddlewareAwareJob : IJob
 	private readonly IJob _inner;
 	private readonly JobDelegate _pipeline;
 
+	/// <summary>
+	/// Initialises the job with the provided middleware chain.
+	/// </summary>
 	public MiddlewareAwareJob(IJob inner, IEnumerable<IJobMiddleware> middlewares)
 	{
 		_inner = inner;

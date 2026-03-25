@@ -1,0 +1,39 @@
+name: Publish
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+jobs:
+  publish:
+    name: Publish to NuGet.org
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Test
+        run: dotnet test -v minimal
+
+      - name: Pack
+        run: |
+          VERSION="${{ github.ref_name }}"
+          dotnet pack Looop.slnx -c Release -o artifacts -p:Version="${VERSION#v}"
+
+      - name: Push
+        run: |
+          dotnet nuget push "artifacts/*.nupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+          dotnet nuget push "artifacts/*.snupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate

@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <!-- Shared language settings for every project in the repo -->
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Non-src projects (tests, examples) are not packable by default.
+         src/Directory.Build.props overrides both of these for library projects. -->
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+</Project>

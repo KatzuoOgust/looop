@@ -27,3 +27,6 @@ jobs:
 
       - name: Test
         run: dotnet test --no-build -v minimal
+
+      - name: Pack (verify)
+        run: dotnet pack Looop.slnx -c Release -o artifacts
