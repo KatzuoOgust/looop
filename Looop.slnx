@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/examples/">
+    <Project Path="examples/AspNetCoreExample/AspNetCoreExample.csproj" />
+    <Project Path="examples/SimpleCli/SimpleCli.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Looop.AspNetCore/Looop.AspNetCore.csproj" />
+    <Project Path="src/Looop/Looop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Looop.Tests/Looop.Tests.csproj" />
+  </Folder>
+</Solution>
