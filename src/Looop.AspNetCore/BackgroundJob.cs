@@ -23,7 +23,7 @@ public sealed partial class BackgroundJob<T>(
 
 	private volatile bool _stopped;
 	private volatile bool _faulted;
-	private Exception? _lastException;
+	private volatile Exception? _lastException;
 
 	/// <inheritdoc/>
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
