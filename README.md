@@ -174,6 +174,24 @@ builder.Services.AddJobMiddleware<RetryMiddleware>(_ =>
     new RetryMiddleware(retryLogger, new RetryOptions { MaxRetries = 5 }));
 ```
 
+## Health checks
+
+`BackgroundJob<T>` implements `IHealthCheck` and is registered as a singleton by `AddBackgroundJob<T>`, so it can be wired into ASP.NET Core health checks with a single call:
+
+```csharp
+builder.Services.AddBackgroundJob<HeartbeatJob>();
+
+builder.Services.AddHealthChecks()
+    .AddBackgroundJobCheck<HeartbeatJob>();          // name defaults to "HeartbeatJob"
+    // .AddBackgroundJobCheck<HeartbeatJob>("heartbeat");  // custom name
+```
+
+| Job state | Health status |
+|---|---|
+| Running | `Healthy` |
+| Stopped (trigger returned `null`) | `Degraded` |
+| Faulted (unhandled exception) | `Unhealthy` |
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, workflow, and code conventions.

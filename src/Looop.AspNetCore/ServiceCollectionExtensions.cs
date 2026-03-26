@@ -1,6 +1,7 @@
 using KatzuoOgust.Looop;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace KatzuoOgust.Looop.AspNetCore;
 
@@ -9,18 +10,24 @@ public static class ServiceCollectionExtensions
 {
 	/// <summary>
 	/// Registers <typeparamref name="T"/> as a singleton and starts it as a hosted background job.
+	/// The <see cref="BackgroundJob{T}"/> is also registered as a singleton so it can be used
+	/// as an <see cref="Microsoft.Extensions.Diagnostics.HealthChecks.IHealthCheck"/> via
+	/// <c>services.AddHealthChecks().AddCheck&lt;BackgroundJob&lt;T&gt;&gt;(name)</c>.
 	/// </summary>
 	public static IServiceCollection AddBackgroundJob<T>(this IServiceCollection services)
 		where T : class, IJob
 	{
 		services.TryAddSingleton<T>();
-		services.AddHostedService<BackgroundJob<T>>();
+		RegisterBackgroundJob<T>(services);
 		return services;
 	}
 
 	/// <summary>
 	/// Registers <typeparamref name="T"/> using <paramref name="factory"/> and starts it
 	/// as a hosted background job.
+	/// The <see cref="BackgroundJob{T}"/> is also registered as a singleton so it can be used
+	/// as an <see cref="Microsoft.Extensions.Diagnostics.HealthChecks.IHealthCheck"/> via
+	/// <c>services.AddHealthChecks().AddCheck&lt;BackgroundJob&lt;T&gt;&gt;(name)</c>.
 	/// </summary>
 	public static IServiceCollection AddBackgroundJob<T>(
 		this IServiceCollection services,
@@ -28,7 +35,7 @@ public static class ServiceCollectionExtensions
 		where T : class, IJob
 	{
 		services.TryAddSingleton<T>(factory);
-		services.AddHostedService<BackgroundJob<T>>();
+		RegisterBackgroundJob<T>(services);
 		return services;
 	}
 
@@ -53,5 +60,13 @@ public static class ServiceCollectionExtensions
 	{
 		services.AddSingleton<IJobMiddleware>(factory);
 		return services;
+	}
+
+	private static void RegisterBackgroundJob<T>(IServiceCollection services)
+		where T : class, IJob
+	{
+		services.TryAddSingleton<BackgroundJob<T>>();
+		services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, BackgroundJob<T>>(
+			sp => sp.GetRequiredService<BackgroundJob<T>>()));
 	}
 }

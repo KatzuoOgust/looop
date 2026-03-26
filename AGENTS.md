@@ -16,7 +16,8 @@ The central entry point is `Loop.RunAsync`. It calls `trigger.NextAsync(lastRunA
 - **`ITrigger`** — `ValueTask<DateTimeOffset?> NextAsync(DateTimeOffset? lastRunAt, ct)`. `lastRunAt` is the previously scheduled fire time; stateless triggers use it as the reference point to compute the next occurrence. Returning `null` terminates the loop. Trigger implementations are **internal**; always use the `Trigger.*` factory.
 - **`IErrorPolicy`** — `ValueTask HandleErrorAsync(ex, ct)`. Return normally = continue loop; throw = stop loop.
 - **`IJob`** — inherits `ITrigger` and `IErrorPolicy`, adding `Task HandleAsync(ct)`. Implement all three members in one type.
-- **`IJobMiddleware`** — `Task InvokeAsync(ct, JobDelegate next)` — same pattern as ASP.NET Core request middleware.
+- **`IJobMiddleware`** — `Task InvokeAsync(ct, JobDelegate next)` — same pattern as ASP.NET Core request middleware. Lives in `KatzuoOgust.Looop` alongside `IJob`.
+- **`BackgroundJob<T>`** — hosted service (`BackgroundService`) that also implements `IHealthCheck`: `Healthy` while running, `Degraded` after a graceful stop, `Unhealthy` after a fault. Registered as a singleton by `AddBackgroundJob<T>` so it can be plugged into ASP.NET Core health checks via `AddBackgroundJobCheck<T>()`.
 
 ## Stateful vs Stateless Triggers
 
@@ -49,7 +50,7 @@ All classes under `src/Looop/Triggers/` are `internal sealed`. The `Trigger` sta
 
 ## Middleware Pipeline
 
-`MiddlewareAwareJob` (`src/Looop/Pipeline/Middlewares/MiddlewareAwareJob.cs`) wraps an `IJob` in the middleware chain. The pipeline is built by iterating middlewares in **reverse** so that the first registered becomes the outermost wrapper. `BackgroundJob<T>` (the hosted service) applies this automatically via DI.
+`MiddlewareAwareJob` (`src/Looop/MiddlewareAwareJob.cs`) wraps an `IJob` in the middleware chain. The pipeline is built by iterating middlewares in **reverse** so that the first registered becomes the outermost wrapper. `BackgroundJob<T>` (the hosted service) applies this automatically via DI.
 
 Registration order matters:
 ```csharp
@@ -84,9 +85,10 @@ make         # list all targets
 | File | What it shows |
 |---|---|
 | `src/Looop/Loop.cs` | Core run loop — the scheduler/dispatcher |
-| `src/Looop/Pipeline/Middlewares/MiddlewareAwareJob.cs` | Pipeline assembly via reverse-iteration |
+| `src/Looop/MiddlewareAwareJob.cs` | Pipeline assembly via reverse-iteration |
 | `src/Looop/Triggers/ShiftTrigger.cs` | Shared base for `Before`/`After` |
-| `src/Looop.AspNetCore/BackgroundJob.cs` | Hosted service wiring + structured logging pattern |
+| `src/Looop.AspNetCore/BackgroundJob.cs` | Hosted service wiring, structured logging, `IHealthCheck` implementation |
+| `src/Looop.AspNetCore/HealthChecksBuilderExtensions.cs` | `AddBackgroundJobCheck<T>()` extension on `IHealthChecksBuilder` |
 | `examples/AspNetCoreExample/Program.cs` | End-to-end DI registration example |
 | `tests/Looop.Tests/ConcurrencyTests.cs` | Documents known thread-safety limitations |
 
