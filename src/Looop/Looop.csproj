@@ -4,6 +4,7 @@
     <PackageId>KatzuoOgust.Looop</PackageId>
     <Description>A tiny .NET library for running async actions in a loop with pluggable, composable triggers and error policies.</Description>
     <RootNamespace>KatzuoOgust.Looop</RootNamespace>
+    <AssemblyName>KatzuoOgust.Looop</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

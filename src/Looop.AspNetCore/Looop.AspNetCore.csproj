@@ -4,6 +4,7 @@
     <PackageId>KatzuoOgust.Looop.AspNetCore</PackageId>
     <Description>ASP.NET Core BackgroundService hosting, DI extensions, and middleware pipeline for KatzuoOgust.Looop.</Description>
     <RootNamespace>KatzuoOgust.Looop.AspNetCore</RootNamespace>
+    <AssemblyName>KatzuoOgust.Looop.AspNetCore</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <!-- Shares the KatzuoOgust.Looop namespace to access internal types under test. -->
     <RootNamespace>KatzuoOgust.Looop</RootNamespace>
+    <AssemblyName>KatzuoOgust.Looop.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
